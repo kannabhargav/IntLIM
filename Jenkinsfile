@@ -51,7 +51,10 @@ pipeline {
                             docker pull rocker/shiny:4.1.0
                         """
                         script {
-                            docker.build("${env.IMAGE_NAME}", "--build-arg SOURCE_FOLDER=./${BUILD_VERSION} --no-cache ./")
+                           def image = docker.build(
+                                "ncats/intlim:${env.BUILD_VERSION}",
+                                "--no-cache ."
+                            )
                             
                             docker.withRegistry('https://853771734544.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:ifx-jenkins-ci') {
                                 image.push("${env.BUILD_VERSION}")
