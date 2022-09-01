@@ -51,11 +51,9 @@ pipeline {
                             docker pull rocker/shiny:4.1.0
                         """
                         script {
-                            def image = docker.build(
-                                "ncats/intlim:${env.BUILD_VERSION}",
-                                "--no-cache ."
-                            )
-                            docker.withRegistry("https://registry-1.docker.io/v2/","f16c74f9-0a60-4882-b6fd-bec3b0136b84") {
+                            docker.build("${env.IMAGE_NAME}", "--build-arg SOURCE_FOLDER=./${BUILD_VERSION} --no-cache ./")
+                            
+                            docker.withRegistry('https://853771734544.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:ifx-jenkins-ci') {
                                 image.push("${env.BUILD_VERSION}")
                             }
                         }
@@ -72,10 +70,12 @@ pipeline {
                 configFileProvider([
                     configFile(fileId: 'intlim-docker-compose.yml', targetLocation: 'docker-compose.yml')
                 ]) {	
-                    withEnv([
-                        "DOCKER_REPO_NAME=ncats/intlim",
-                        "BUILD_VERSION=" + (params.BUILD_VERSION ?: env.BUILD_VERSION)
-                    ]) {
+                    withAWS(credentials:'ifx-jenkins-ci') {
+                        sh '''
+                            export DOCKER_LOGIN="`aws ecr get-login --no-include-email --region us-east-1`"
+                            $DOCKER_LOGIN
+                           '''
+                           ecrLogin()
                         script {
                             def docker = new org.labshare.Docker()
                             docker.deployDockerUI()
