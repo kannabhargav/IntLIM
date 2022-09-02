@@ -14,6 +14,7 @@ pipeline {
     }
     environment {
         PROJECT_NAME = "intlim"
+        DOCKER_REPO_NAME = "853771734544.dkr.ecr.us-east-1.amazonaws.com/intlim"
     }
     stages {
         stage('Build Version') {
