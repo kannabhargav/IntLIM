@@ -9,6 +9,8 @@ RUN Rscript install-dependency.R
 
 #RUN R -e "update.packages(ask = FALSE)"
 
+RUN R -e "install.packages(c('devtools'))
+
 COPY install-intlim.R install-intlim.R
 RUN Rscript install-intlim.R
 
