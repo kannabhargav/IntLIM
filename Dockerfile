@@ -1,4 +1,4 @@
-FROM rocker/shiny:4.1.0
+FROM rocker/shiny:4.1
 
 RUN apt-get update --allow-releaseinfo-change && apt-get install -y build-essential libcurl4-gnutls-dev libxml2-dev libssl-dev default-libmysqlclient-dev
 
